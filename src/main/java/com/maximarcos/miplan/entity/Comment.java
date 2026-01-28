@@ -17,8 +17,7 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String text;
     private LocalDateTime createdAt;
-    @ManyToOne
-    private Plan plan;
+
     @ManyToOne
     private User user;
 }

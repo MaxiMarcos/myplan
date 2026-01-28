@@ -1,9 +1,15 @@
 package com.maximarcos.miplan.service;
 
+import com.maximarcos.miplan.dto.action.ActionRequestDto;
+import com.maximarcos.miplan.dto.action.ActionResponseDto;
 import com.maximarcos.miplan.entity.Action;
+import com.maximarcos.miplan.mapper.ActionMapper;
 import com.maximarcos.miplan.repository.ActionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -11,8 +17,14 @@ import java.util.Optional;
 @Service
 public class ActionService {
 
-    @Autowired
-    private ActionRepository actionRepository;
+
+    private final ActionRepository actionRepository;
+    private final ActionMapper actionMapper;
+
+    public ActionService(ActionRepository actionRepository, ActionMapper actionMapper) {
+        this.actionRepository = actionRepository;
+        this.actionMapper = actionMapper;
+    }
 
     public List<Action> findAll() {
         return actionRepository.findAll();
@@ -22,11 +34,33 @@ public class ActionService {
         return actionRepository.findById(id);
     }
 
-    public Action save(Action action) {
-        return actionRepository.save(action);
+    public ResponseEntity<?> save(ActionRequestDto request)
+    {
+        Action action = actionMapper.toEntity(request);
+        actionRepository.save(action);
+        return ResponseEntity.ok(actionMapper.toResponse(action));
     }
 
     public void deleteById(Long id) {
-        actionRepository.deleteById(id);
+
+        Action action = this.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        if (action != null) {
+            actionRepository.deleteById(id);
+        }
+    }
+
+    public ResponseEntity<ActionResponseDto> updateAction(Long id, ActionRequestDto request) {
+
+        Action action = this.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        action.setTitle(request.title());
+        action.setDescription(request.description());
+
+        Action savedAction = actionRepository.save(action);
+
+        return ResponseEntity.ok(actionMapper.toResponse(savedAction));
     }
 }

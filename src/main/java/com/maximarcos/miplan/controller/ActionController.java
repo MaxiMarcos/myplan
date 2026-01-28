@@ -1,9 +1,12 @@
 package com.maximarcos.miplan.controller;
 
-import com.maximarcos.miplan.dto.ActionDto;
+import com.maximarcos.miplan.dto.action.ActionRequestDto;
+import com.maximarcos.miplan.dto.action.ActionResponseDto;
 import com.maximarcos.miplan.entity.Action;
 import com.maximarcos.miplan.mapper.ActionMapper;
 import com.maximarcos.miplan.service.ActionService;
+import com.maximarcos.miplan.service.PlanService;
+import com.maximarcos.miplan.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,13 +20,13 @@ public class ActionController {
     private final ActionService actionService;
     private final ActionMapper actionMapper;
 
-    public ActionController(ActionService actionService, ActionMapper actionMapper) {
+    public ActionController(ActionService actionService, ActionMapper actionMapper, UserService userService) {
         this.actionService = actionService;
         this.actionMapper = actionMapper;
     }
 
     @GetMapping
-    public List<ActionDto> getAllActions() {
+    public List<ActionResponseDto> getAllActions() {
         return actionMapper.toListDto(actionService.findAll());
     }
 
@@ -34,31 +37,20 @@ public class ActionController {
     }
 
     @PostMapping
-    public Action createAction(@RequestBody Action action) {
-        return actionService.save(action);
+    public ResponseEntity<?> createAction(@RequestBody ActionRequestDto request) {
+
+        return actionService.save(request);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Action> updateAction(@PathVariable Long id, @RequestBody ActionDto actionDto) {
-        Optional<Action> actionOptional = actionService.findById(id);
-        if (actionOptional.isPresent()) {
-            Action existingAction = actionOptional.get();
-            Action updatedAction = actionMapper.toEntity(actionDto);
-            updatedAction.setId(existingAction.getId()); // Ensure the ID remains the same
-            return ResponseEntity.ok(actionService.save(updatedAction));
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<?> updateAction(@PathVariable Long id, @RequestBody ActionRequestDto actionRequestDto) {
+
+        return actionService.updateAction(id, actionRequestDto);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteAction(@PathVariable Long id) {
-        Optional<Action> action = actionService.findById(id);
-        if (action.isPresent()) {
-            actionService.deleteById(id);
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public void deleteAction(@PathVariable Long id) {
+
+        actionService.deleteById(id);
     }
 }

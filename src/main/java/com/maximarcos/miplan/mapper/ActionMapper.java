@@ -1,6 +1,7 @@
 package com.maximarcos.miplan.mapper;
 
-import com.maximarcos.miplan.dto.ActionDto;
+import com.maximarcos.miplan.dto.action.ActionRequestDto;
+import com.maximarcos.miplan.dto.action.ActionResponseDto;
 import com.maximarcos.miplan.entity.Action;
 import org.springframework.stereotype.Component;
 
@@ -10,20 +11,24 @@ import java.util.stream.Collectors;
 @Component
 public class ActionMapper {
 
-    public ActionDto toDto(Action action) {
-        return new ActionDto(action.getTitle(), action.getDescription());
-    }
-
-    public Action toEntity(ActionDto actionDto) {
+    public Action toEntity(ActionRequestDto request) {
         return Action.builder()
-                .title(actionDto.title())
-                .description(actionDto.description())
+                .title(request.title())
+                .description(request.description())
                 .build();
     }
 
-    public List<ActionDto> toListDto(List<Action> actions) {
+    public ActionResponseDto toResponse(Action action) {
+        return new ActionResponseDto(
+                action.getId(),
+                action.getTitle(),
+                action.getDescription()
+        );
+    }
+
+    public List<ActionResponseDto> toListDto(List<Action> actions) {
         return actions.stream()
-                .map(this::toDto)
+                .map(this::toResponse)
                 .collect(Collectors.toList());
     }
 }

@@ -1,6 +1,6 @@
 package com.maximarcos.miplan.controller;
 
-import com.maximarcos.miplan.dto.ProgressDto;
+import com.maximarcos.miplan.dto.progress.ProgressDto;
 import com.maximarcos.miplan.entity.Progress;
 import com.maximarcos.miplan.mapper.ProgressMapper;
 import com.maximarcos.miplan.service.ProgressService;

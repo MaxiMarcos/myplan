@@ -1,7 +1,6 @@
 package com.maximarcos.miplan.entity;
 
 import com.maximarcos.miplan.enums.Status;
-import com.maximarcos.miplan.enums.Visibility;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,13 +22,9 @@ public class Plan {
     private List<Action> action;
     @OneToMany(mappedBy="plan")
     private List<Progress> progress;
-    @OneToMany(mappedBy="plan")
-    private List<Comment> comment;
     @ManyToOne
     private User user;
     @Enumerated(EnumType.STRING)
     private Status status;
-    @Enumerated(EnumType.STRING)
-    private Visibility visibility;
 
 }

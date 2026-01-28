@@ -1,6 +1,6 @@
 package com.maximarcos.miplan.mapper;
 
-import com.maximarcos.miplan.dto.ProgressDto;
+import com.maximarcos.miplan.dto.progress.ProgressDto;
 import com.maximarcos.miplan.entity.Progress;
 import org.springframework.stereotype.Component;
 

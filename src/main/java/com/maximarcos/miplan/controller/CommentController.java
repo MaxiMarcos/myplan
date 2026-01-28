@@ -1,6 +1,6 @@
 package com.maximarcos.miplan.controller;
 
-import com.maximarcos.miplan.dto.CommentDto;
+import com.maximarcos.miplan.dto.comment.CommentDto;
 import com.maximarcos.miplan.entity.Comment;
 import com.maximarcos.miplan.mapper.CommentMapper;
 import com.maximarcos.miplan.service.CommentService;

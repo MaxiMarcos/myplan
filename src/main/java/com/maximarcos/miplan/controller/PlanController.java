@@ -1,9 +1,7 @@
 package com.maximarcos.miplan.controller;
 
-import com.maximarcos.miplan.dto.PlanDto;
+import com.maximarcos.miplan.dto.plan.planRequestDto;
 import com.maximarcos.miplan.entity.Plan;
-import com.maximarcos.miplan.entity.User;
-import com.maximarcos.miplan.enums.Visibility;
 import com.maximarcos.miplan.mapper.PlanMapper;
 import com.maximarcos.miplan.service.PlanService;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +23,7 @@ public class PlanController {
     }
 
     @GetMapping
-    public List<PlanDto> getAllPlans() {
+    public List<planRequestDto> getAllPlans() {
         return planMapper.toListDto(planService.findAll());
     }
 
@@ -35,23 +33,17 @@ public class PlanController {
         return plan.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/{userId}/shared")
-    public ResponseEntity<Plan> getPublicPlanByUser(@PathVariable Long userId) {
-        Optional<Plan> plans = planService.findByVisibilityAndUser(Visibility.PUBLIC, userId);
-        return plans.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
     @PostMapping
     public Plan createPlan(@RequestBody Plan plan) {
         return planService.save(plan);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Plan> updatePlan(@PathVariable Long id, @RequestBody PlanDto planDto) {
+    public ResponseEntity<Plan> updatePlan(@PathVariable Long id, @RequestBody planRequestDto planRequestDto) {
         Optional<Plan> planOptional = planService.findById(id);
         if (planOptional.isPresent()) {
             Plan existingPlan = planOptional.get();
-            Plan updatedPlan = planMapper.toEntity(planDto);
+            Plan updatedPlan = planMapper.toEntity(planRequestDto);
             updatedPlan.setId(existingPlan.getId()); // Ensure the ID remains the same
             return ResponseEntity.ok(planService.save(updatedPlan));
         } else {
