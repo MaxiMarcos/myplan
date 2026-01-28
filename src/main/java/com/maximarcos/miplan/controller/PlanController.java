@@ -2,6 +2,8 @@ package com.maximarcos.miplan.controller;
 
 import com.maximarcos.miplan.dto.PlanDto;
 import com.maximarcos.miplan.entity.Plan;
+import com.maximarcos.miplan.entity.User;
+import com.maximarcos.miplan.enums.Visibility;
 import com.maximarcos.miplan.mapper.PlanMapper;
 import com.maximarcos.miplan.service.PlanService;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +17,6 @@ import java.util.Optional;
 public class PlanController {
 
     private final PlanService planService;
-
     private final PlanMapper planMapper;
 
     public PlanController(PlanService planService, PlanMapper planMapper) {
@@ -32,6 +33,12 @@ public class PlanController {
     public ResponseEntity<Plan> getPlanById(@PathVariable Long id) {
         Optional<Plan> plan = planService.findById(id);
         return plan.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/{userId}/shared")
+    public ResponseEntity<Plan> getPublicPlanByUser(@PathVariable Long userId) {
+        Optional<Plan> plans = planService.findByVisibilityAndUser(Visibility.PUBLIC, userId);
+        return plans.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping

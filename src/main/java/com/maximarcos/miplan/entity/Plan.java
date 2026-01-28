@@ -1,10 +1,12 @@
 package com.maximarcos.miplan.entity;
 
 import com.maximarcos.miplan.enums.Status;
+import com.maximarcos.miplan.enums.Visibility;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Enumeration;
+import java.util.List;
 
 @Getter
 @Setter
@@ -17,12 +19,17 @@ public class Plan {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @OneToMany
-    private Action action;
-    @OneToMany
-    private Progress progress;
-    @OneToMany
-    private Comment comment;
+    @OneToMany(mappedBy="plan")
+    private List<Action> action;
+    @OneToMany(mappedBy="plan")
+    private List<Progress> progress;
+    @OneToMany(mappedBy="plan")
+    private List<Comment> comment;
+    @ManyToOne
+    private User user;
+    @Enumerated(EnumType.STRING)
     private Status status;
+    @Enumerated(EnumType.STRING)
+    private Visibility visibility;
 
 }

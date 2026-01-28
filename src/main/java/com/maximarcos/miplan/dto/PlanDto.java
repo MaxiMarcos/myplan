@@ -5,6 +5,8 @@ import com.maximarcos.miplan.entity.Comment;
 import com.maximarcos.miplan.entity.Progress;
 import com.maximarcos.miplan.enums.Status;
 
+import java.util.List;
 
-public record PlanDto(Action action, Progress progress, Comment comment, Status status) {
+
+public record PlanDto(List<Action> action, List<Progress> progress, List<Comment> comment, Status status) {
 }

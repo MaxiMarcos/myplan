@@ -3,6 +3,8 @@ package com.maximarcos.miplan.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Setter
 @Builder
@@ -14,10 +16,15 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @OneToMany
-    private Plan plan;
-    @OneToMany
-    private Comment comment;
-    @OneToMany
-    private Action action;
+    @Column(unique = true)
+    private String email;
+
+    private String password;
+
+    @OneToMany(mappedBy = "user")
+    private List<Plan> plan;
+    @OneToMany(mappedBy = "user")
+    private List<Comment> comment;
+    @OneToMany(mappedBy = "user")
+    private List<Action> action;
 }
