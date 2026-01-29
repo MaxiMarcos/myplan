@@ -1,6 +1,6 @@
 package com.maximarcos.miplan.mapper;
 
-import com.maximarcos.miplan.dto.comment.CommentDto;
+import com.maximarcos.miplan.dto.comment.CommentRequestDto;
 import com.maximarcos.miplan.dto.comment.CommentResponseDto;
 import com.maximarcos.miplan.entity.Comment;
 import org.springframework.stereotype.Component;
@@ -11,21 +11,20 @@ import java.util.stream.Collectors;
 @Component
 public class CommentMapper {
 
-    public CommentResponseDto toDto(Comment comment) {
-        return new CommentDto(comment.getText(), comment.getUser(), comment.getCreatedAt());
+    public CommentResponseDto toResponse(Comment comment) {
+        return new CommentResponseDto(comment.getText(), comment.getUser().getId(), comment.getCreatedAt());
     }
 
-    public Comment toEntity(CommentDto commentDto) {
+    public Comment toEntity(CommentRequestDto commentRequestDto) {
         return Comment.builder()
-                .text(commentDto.text())
-                .user(commentDto.user())
-                .createdAt(commentDto.createdAt())
+                .text(commentRequestDto.text())
+                .createdAt(commentRequestDto.createdAt())
                 .build();
     }
 
     public List<CommentResponseDto> toListDto(List<Comment> comments) {
         return comments.stream()
-                .map(this::toDto)
+                .map(this::toResponse)
                 .collect(Collectors.toList());
     }
 }

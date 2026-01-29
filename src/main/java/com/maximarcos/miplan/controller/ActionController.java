@@ -5,7 +5,6 @@ import com.maximarcos.miplan.dto.action.ActionResponseDto;
 import com.maximarcos.miplan.entity.Action;
 import com.maximarcos.miplan.mapper.ActionMapper;
 import com.maximarcos.miplan.service.ActionService;
-import com.maximarcos.miplan.service.PlanService;
 import com.maximarcos.miplan.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,13 +36,13 @@ public class ActionController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createAction(@RequestBody ActionRequestDto request) {
+    public ResponseEntity<ActionResponseDto> createAction(@RequestBody ActionRequestDto request) {
 
         return actionService.save(request);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateAction(@PathVariable Long id, @RequestBody ActionRequestDto actionRequestDto) {
+    public ResponseEntity<ActionResponseDto> updateAction(@PathVariable Long id, @RequestBody ActionRequestDto actionRequestDto) {
 
         return actionService.updateAction(id, actionRequestDto);
     }

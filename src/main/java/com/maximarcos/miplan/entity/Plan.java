@@ -18,6 +18,8 @@ public class Plan {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    private String title;
+    private String description;
     @OneToMany(mappedBy="plan")
     private List<Action> action;
     @OneToMany(mappedBy="plan")

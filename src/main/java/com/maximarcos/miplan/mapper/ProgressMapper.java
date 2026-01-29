@@ -1,6 +1,7 @@
 package com.maximarcos.miplan.mapper;
 
-import com.maximarcos.miplan.dto.progress.ProgressDto;
+import com.maximarcos.miplan.dto.progress.ProgressRequestDto;
+import com.maximarcos.miplan.dto.progress.ProgressResponseDto;
 import com.maximarcos.miplan.entity.Progress;
 import org.springframework.stereotype.Component;
 
@@ -10,20 +11,20 @@ import java.util.stream.Collectors;
 @Component
 public class ProgressMapper {
 
-    public ProgressDto toDto(Progress progress) {
-        return new ProgressDto(progress.getDescription(), progress.getDate());
+    public ProgressResponseDto toResponse(Progress progress) {
+        return new ProgressResponseDto(progress.getId(), progress.getDescription(), progress.getDate(), progress.getPlan().getId());
     }
 
-    public Progress toEntity(ProgressDto progressDto) {
+    public Progress toEntity(ProgressRequestDto progressRequestDto) {
         return Progress.builder()
-                .description(progressDto.description())
-                .date(progressDto.date())
+                .description(progressRequestDto.description())
+                .date(progressRequestDto.date())
                 .build();
     }
 
-    public List<ProgressDto> toListDto(List<Progress> progresses) {
-        return progresses.stream()
-                .map(this::toDto)
+    public List<ProgressResponseDto> toListDto(List<Progress> progress) {
+        return progress.stream()
+                .map(this::toResponse)
                 .collect(Collectors.toList());
     }
 }

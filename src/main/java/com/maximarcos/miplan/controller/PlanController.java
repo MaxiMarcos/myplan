@@ -1,6 +1,7 @@
 package com.maximarcos.miplan.controller;
 
-import com.maximarcos.miplan.dto.plan.planRequestDto;
+import com.maximarcos.miplan.dto.plan.PlanRequestDto;
+import com.maximarcos.miplan.dto.plan.PlanResponseDto;
 import com.maximarcos.miplan.entity.Plan;
 import com.maximarcos.miplan.mapper.PlanMapper;
 import com.maximarcos.miplan.service.PlanService;
@@ -23,8 +24,8 @@ public class PlanController {
     }
 
     @GetMapping
-    public List<planRequestDto> getAllPlans() {
-        return planMapper.toListDto(planService.findAll());
+    public List<PlanResponseDto> getAllPlans() {
+        return planMapper.toListResponseDto(planService.findAll());
     }
 
     @GetMapping("/{id}")
@@ -34,21 +35,13 @@ public class PlanController {
     }
 
     @PostMapping
-    public Plan createPlan(@RequestBody Plan plan) {
-        return planService.save(plan);
+    public ResponseEntity<?> createPlan(@RequestBody PlanRequestDto request) {
+        return planService.save(request);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Plan> updatePlan(@PathVariable Long id, @RequestBody planRequestDto planRequestDto) {
-        Optional<Plan> planOptional = planService.findById(id);
-        if (planOptional.isPresent()) {
-            Plan existingPlan = planOptional.get();
-            Plan updatedPlan = planMapper.toEntity(planRequestDto);
-            updatedPlan.setId(existingPlan.getId()); // Ensure the ID remains the same
-            return ResponseEntity.ok(planService.save(updatedPlan));
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<?> updatePlan(@PathVariable Long id, @RequestBody PlanRequestDto request) {
+        return planService.updateById(id, request);
     }
 
     @DeleteMapping("/{id}")

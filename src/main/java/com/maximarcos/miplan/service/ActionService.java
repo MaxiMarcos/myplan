@@ -34,7 +34,7 @@ public class ActionService {
         return actionRepository.findById(id);
     }
 
-    public ResponseEntity<?> save(ActionRequestDto request)
+    public ResponseEntity<ActionResponseDto> save(ActionRequestDto request)
     {
         Action action = actionMapper.toEntity(request);
         actionRepository.save(action);

@@ -8,5 +8,5 @@ import com.maximarcos.miplan.enums.Status;
 import java.util.List;
 
 
-public record PlanRequestDto(List<Action> action, List<Progress> progress, User user, Status status) {
+public record PlanRequestDto(List<Long> actionId, List<Long> progressId, Long userId, Status status, String title, String description) {
 }

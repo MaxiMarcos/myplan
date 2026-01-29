@@ -1,7 +1,10 @@
 package com.maximarcos.miplan.mapper;
 
-import com.maximarcos.miplan.dto.plan.planRequestDto;
+import com.maximarcos.miplan.dto.plan.PlanRequestDto;
+import com.maximarcos.miplan.dto.plan.PlanResponseDto;
+import com.maximarcos.miplan.entity.Action;
 import com.maximarcos.miplan.entity.Plan;
+import com.maximarcos.miplan.entity.Progress;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -10,23 +13,33 @@ import java.util.stream.Collectors;
 @Component
 public class PlanMapper {
 
-    public planRequestDto toDto(Plan plan) {
-        return new planRequestDto(plan.getAction(), plan.getProgress(),plan.getUser(), plan.getStatus());
+    public PlanResponseDto toResponseDto(Plan plan) {
+        return new PlanResponseDto(
+                plan.getId(),
+                plan.getAction()
+                        .stream()
+                        .map(Action::getId)
+                        .toList(),
+                plan.getProgress()
+                        .stream()
+                        .map(Progress::getId)
+                        .toList(),
+                plan.getStatus(),
+                plan.getTitle(),
+                plan.getDescription());
     }
 
-    public Plan toEntity(planRequestDto planRequestDto) {
-
-        Plan plan = Plan.builder()
-                .action(planRequestDto.action())
+    public Plan toEntity(PlanRequestDto planRequestDto) {
+        return Plan.builder()
                 .status(planRequestDto.status())
-                .progress(planRequestDto.progress())
+                .title(planRequestDto.title())
+                .description(planRequestDto.description())
                 .build();
-        return plan;
     }
 
-    public List<planRequestDto> toListDto(List<Plan> plans) {
+    public List<PlanResponseDto> toListResponseDto(List<Plan> plans) {
         return plans.stream()
-                .map(this::toDto)
+                .map(this::toResponseDto)
                 .collect(Collectors.toList());
     }
 }
