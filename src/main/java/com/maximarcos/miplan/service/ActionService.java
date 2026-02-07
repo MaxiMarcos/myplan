@@ -5,6 +5,7 @@ import com.maximarcos.miplan.dto.action.ActionResponseDto;
 import com.maximarcos.miplan.entity.Action;
 import com.maximarcos.miplan.mapper.ActionMapper;
 import com.maximarcos.miplan.repository.ActionRepository;
+import com.maximarcos.miplan.repository.PlanRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,10 +21,12 @@ public class ActionService {
 
     private final ActionRepository actionRepository;
     private final ActionMapper actionMapper;
+    private final PlanRepository planRepository;
 
-    public ActionService(ActionRepository actionRepository, ActionMapper actionMapper) {
+    public ActionService(ActionRepository actionRepository, ActionMapper actionMapper, PlanRepository planRepository) {
         this.actionRepository = actionRepository;
         this.actionMapper = actionMapper;
+        this.planRepository = planRepository;
     }
 
     public List<Action> findAll() {
@@ -34,9 +37,11 @@ public class ActionService {
         return actionRepository.findById(id);
     }
 
-    public ResponseEntity<ActionResponseDto> save(ActionRequestDto request)
-    {
+    public ResponseEntity<ActionResponseDto> save(ActionRequestDto request) {
         Action action = actionMapper.toEntity(request);
+        if (request.planId() != null) {
+            planRepository.findById(request.planId()).ifPresent(action::setPlan);
+        }
         actionRepository.save(action);
         return ResponseEntity.ok(actionMapper.toResponse(action));
     }

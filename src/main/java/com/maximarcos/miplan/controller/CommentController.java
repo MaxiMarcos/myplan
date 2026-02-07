@@ -16,24 +16,27 @@ import java.util.Optional;
 public class CommentController {
 
     private final CommentService commentService;
+    private final CommentMapper commentMapper;
 
     public CommentController(CommentService commentService, CommentMapper commentMapper) {
         this.commentService = commentService;
+        this.commentMapper = commentMapper;
     }
 
     @GetMapping
-    public ResponseEntity<?> getAllComments() {
+    public List<CommentResponseDto> getAllComments() {
         return commentService.findAll();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Comment> getCommentById(@PathVariable Long id) {
+    public ResponseEntity<CommentResponseDto> getCommentById(@PathVariable Long id) {
         Optional<Comment> comment = commentService.findById(id);
-        return comment.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        return comment.map(c -> ResponseEntity.ok(commentMapper.toResponse(c)))
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<?> createComment(@RequestBody CommentRequestDto request) {
+    public ResponseEntity<CommentResponseDto> createComment(@RequestBody CommentRequestDto request) {
         return commentService.save(request);
     }
 

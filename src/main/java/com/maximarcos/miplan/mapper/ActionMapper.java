@@ -19,10 +19,12 @@ public class ActionMapper {
     }
 
     public ActionResponseDto toResponse(Action action) {
+        Long planId = action.getPlan() != null ? action.getPlan().getId() : null;
         return new ActionResponseDto(
                 action.getId(),
                 action.getTitle(),
-                action.getDescription()
+                action.getDescription(),
+                planId
         );
     }
 

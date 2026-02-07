@@ -7,6 +7,7 @@ import com.maximarcos.miplan.entity.Plan;
 import com.maximarcos.miplan.entity.Progress;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,16 +15,16 @@ import java.util.stream.Collectors;
 public class PlanMapper {
 
     public PlanResponseDto toResponseDto(Plan plan) {
+        List<Long> actionIds = plan.getAction() != null
+                ? plan.getAction().stream().map(Action::getId).collect(Collectors.toList())
+                : Collections.emptyList();
+        List<Long> progressIds = plan.getProgress() != null
+                ? plan.getProgress().stream().map(Progress::getId).collect(Collectors.toList())
+                : Collections.emptyList();
         return new PlanResponseDto(
                 plan.getId(),
-                plan.getAction()
-                        .stream()
-                        .map(Action::getId)
-                        .toList(),
-                plan.getProgress()
-                        .stream()
-                        .map(Progress::getId)
-                        .toList(),
+                actionIds,
+                progressIds,
                 plan.getStatus(),
                 plan.getTitle(),
                 plan.getDescription());
