@@ -4,6 +4,7 @@ import com.maximarcos.miplan.dto.post.PostRequestDto;
 import com.maximarcos.miplan.dto.post.PostResponseDto;
 import com.maximarcos.miplan.entity.Post;
 import com.maximarcos.miplan.entity.User;
+import com.maximarcos.miplan.enums.Category;
 import com.maximarcos.miplan.mapper.PostMapper;
 import com.maximarcos.miplan.repository.PostRepository;
 import com.maximarcos.miplan.repository.UserRepository;
@@ -80,4 +81,11 @@ public class PostService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         postRepository.deleteById(id);
     }
+
+    public List<Post> findByCategory(Category category) {
+
+        List<Post> posts = postRepository.findByCategory(category);
+        return posts;
+    }
+
 }

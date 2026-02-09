@@ -5,6 +5,7 @@ import com.maximarcos.miplan.dto.plan.PlanRequestDto;
 import com.maximarcos.miplan.dto.post.PostRequestDto;
 import com.maximarcos.miplan.dto.post.PostResponseDto;
 import com.maximarcos.miplan.entity.Post;
+import com.maximarcos.miplan.enums.Category;
 import com.maximarcos.miplan.mapper.PostMapper;
 import com.maximarcos.miplan.service.CommentService;
 import com.maximarcos.miplan.service.PostService;
@@ -20,12 +21,10 @@ public class PostController {
 
     private final PostService postService;
     private final PostMapper postMapper;
-    private final CommentService commentService;
 
-    public PostController(PostService postService, PostMapper postMapper, CommentService commentService) {
+    public PostController(PostService postService, PostMapper postMapper) {
         this.postService = postService;
         this.postMapper = postMapper;
-        this.commentService = commentService;
     }
 
     @GetMapping
@@ -33,9 +32,14 @@ public class PostController {
         return postMapper.toListResponseDto(postService.findAll());
     }
 
-    @GetMapping("/{postId}/comments")
-    public List<CommentResponseDto> getCommentsByPost(@PathVariable Long postId) {
-        return commentService.findByPostId(postId);
+    @GetMapping("/categories")
+    public Category[] getCategories() {
+        return Category.values();
+    }
+
+    @GetMapping("/category/{category}")
+    public List<PostResponseDto> findByCategory(@PathVariable Category category) {
+        return postMapper.toListResponseDto(postService.findByCategory(category));
     }
 
     @GetMapping("/{id}")

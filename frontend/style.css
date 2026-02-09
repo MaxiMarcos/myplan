@@ -103,7 +103,51 @@ main {
 .panel-plans .btn-primary,
 .panel-posts .btn-primary {
     margin-bottom: 1rem;
-    width: 100%;
+    width: 70%;
+}
+
+.forum-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.forum-header h2 {
+    margin: 0;
+}
+
+.categories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.category-card {
+    background: var(--card);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.category-card:hover {
+    border-color: var(--primary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.category-card h3 {
+    margin: 0 0 0.5rem;
+    color: var(--primary);
+    font-size: 1.1rem;
+}
+
+.category-card p {
+    margin: 0;
+    font-size: 0.85rem;
 }
 
 .list {
@@ -451,6 +495,16 @@ body.dark-mode .btn-dislike {
 
 body.dark-mode .btn-like:hover { background: #2d4a3a; }
 body.dark-mode .btn-dislike:hover { background: #4a3a3a; }
+
+body.dark-mode .category-card {
+    background: var(--card);
+    border-color: var(--border);
+}
+
+body.dark-mode .category-card:hover {
+    border-color: var(--primary);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
 
 body.dark-mode .modal-form input,
 body.dark-mode .modal-form textarea,

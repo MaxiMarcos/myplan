@@ -11,10 +11,12 @@ const CATEGORY_LABELS = {
 
 let selectedPlanId = null;
 let selectedPostId = null;
+let selectedCategory = null;
 let plans = [];
 let actions = [];
 let posts = [];
 let comments = [];
+let categories = [];
 
 const elements = {
     sectionPlans: document.getElementById('sectionPlans'),
@@ -30,6 +32,9 @@ const elements = {
     btnNewAction: document.getElementById('btnNewAction'),
     btnDeletePlan: document.getElementById('btnDeletePlan'),
     postList: document.getElementById('postList'),
+    categoriesView: document.getElementById('categoriesView'),
+    btnBackToCategories: document.getElementById('btnBackToCategories'),
+    forumTitle: document.getElementById('forumTitle'),
     forumPlaceholder: document.getElementById('forumPlaceholder'),
     forumContent: document.getElementById('forumContent'),
     postTitle: document.getElementById('postTitle'),
@@ -103,7 +108,10 @@ function switchSection(section) {
     elements.sectionPlans.classList.toggle('hidden', section !== 'plans');
     elements.sectionForum.classList.toggle('hidden', section !== 'forum');
     if (section === 'plans') loadPlans();
-    if (section === 'forum') loadPosts();
+    if (section === 'forum') {
+        showCategoriesView();
+        loadCategories();
+    }
 }
 
 elements.navTabs?.forEach(tab => {
@@ -271,14 +279,68 @@ async function deleteAction(id) {
 }
 
 // --- Foro ---
-async function loadPosts() {
+async function loadCategories() {
     try {
-        posts = await fetchApi('/posts');
+        categories = await fetchApi('/posts/categories');
+        renderCategories();
+    } catch (err) {
+        console.error('Error cargando categorías:', err);
+        elements.categoriesView.innerHTML = '<p class="muted">Error al cargar categorías.</p>';
+    }
+}
+
+async function loadPosts(category = null) {
+    try {
+        if (category) {
+            posts = await fetchApi(`/posts/category/${category}`);
+            selectedCategory = category;
+        } else {
+            posts = await fetchApi('/posts');
+            selectedCategory = null;
+        }
+        showPostsView();
         renderPostList();
     } catch (err) {
         console.error('Error cargando posts:', err);
         elements.postList.innerHTML = '<li class="list-item muted">No se pudo cargar.</li>';
     }
+}
+
+function showCategoriesView() {
+    elements.categoriesView.style.display = 'grid';
+    elements.postList.style.display = 'none';
+    elements.btnBackToCategories.style.display = 'none';
+    elements.forumTitle.textContent = 'Foro';
+    selectedCategory = null;
+    selectedPostId = null;
+    elements.forumPlaceholder.classList.remove('hidden');
+    elements.forumContent.classList.add('hidden');
+}
+
+function showPostsView() {
+    elements.categoriesView.style.display = 'none';
+    elements.postList.style.display = 'block';
+    elements.btnBackToCategories.style.display = 'block';
+    const categoryLabel = selectedCategory ? CATEGORY_LABELS[selectedCategory] || selectedCategory : 'Todos';
+    elements.forumTitle.textContent = `Foro - ${categoryLabel}`;
+}
+
+function renderCategories() {
+    if (!categories.length) {
+        elements.categoriesView.innerHTML = '<p class="muted">No hay categorías disponibles.</p>';
+        return;
+    }
+    elements.categoriesView.innerHTML = categories.map(cat => `
+        <div class="category-card" data-category="${cat}">
+            <h3>${CATEGORY_LABELS[cat] || cat}</h3>
+            <p class="muted">Ver posts de esta categoría</p>
+        </div>
+    `).join('');
+    elements.categoriesView.querySelectorAll('.category-card').forEach(card => {
+        card.addEventListener('click', () => {
+            loadPosts(card.dataset.category);
+        });
+    });
 }
 
 async function loadComments(postId) {
@@ -356,11 +418,17 @@ async function submitPost(e) {
                 title: elements.postTitleInput.value.trim(),
                 content: elements.postContentInput.value.trim(),
                 category: elements.postCategorySelect.value,
-                authorId: DEFAULT_USER_ID
+                authorId: DEFAULT_USER_ID,
+                like: 0
             }
         });
         elements.modalPost.close();
-        await loadPosts();
+        if (selectedCategory) {
+            await loadPosts(selectedCategory);
+        } else {
+            showCategoriesView();
+            await loadCategories();
+        }
     } catch (err) {
         alert('Error al publicar: ' + (err.message || err));
     }
@@ -417,6 +485,10 @@ elements.formComment?.addEventListener('submit', submitComment);
 elements.btnCancelPost?.addEventListener('click', () => elements.modalPost.close());
 elements.btnLike?.addEventListener('click', () => selectedPostId && updatePostLikes(selectedPostId, true));
 elements.btnDislike?.addEventListener('click', () => selectedPostId && updatePostLikes(selectedPostId, false));
+elements.btnBackToCategories?.addEventListener('click', () => {
+    showCategoriesView();
+    loadCategories();
+});
 
 // --- Dark mode ---
 function initDarkMode() {

@@ -46,9 +46,13 @@
         <!-- Sección Foro -->
         <section id="sectionForum" class="app-section hidden">
             <div class="panel panel-posts">
-                <h2>Foro</h2>
-                <button type="button" class="btn-primary" id="btnNewPost">+ Nuevo post</button>
-                <div id="postList" class="list"></div>
+                <div class="forum-header">
+                    <h2 id="forumTitle">Foro</h2>
+                    <button type="button" class="btn-primary" id="btnNewPost">+ Nuevo post</button>
+                </div>
+                <button type="button" class="btn-secondary btn-sm" id="btnBackToCategories" style="display:none; margin-bottom: 1rem;">← Volver a categorías</button>
+                <div id="categoriesView" class="categories-grid"></div>
+                <div id="postList" class="list" style="display:none;"></div>
             </div>
             <div class="panel panel-detail">
                 <div id="forumPlaceholder" class="detail-placeholder">

@@ -35,10 +35,16 @@ public class CommentController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/{postId}/comments")
+    public List<CommentResponseDto> getCommentsByPost(@PathVariable Long postId) {
+        return commentService.findByPostId(postId);
+    }
+
     @PostMapping
     public ResponseEntity<CommentResponseDto> createComment(@RequestBody CommentRequestDto request) {
         return commentService.save(request);
     }
+
 
 
     @DeleteMapping("/{id}")
