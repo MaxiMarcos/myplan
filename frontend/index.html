@@ -10,34 +10,130 @@
     <header>
         <h1>Mi Plan</h1>
         <p>Tu guía para alcanzar tus objetivos</p>
+        <nav class="header-nav">
+            <button type="button" class="nav-tab active" data-section="plans">Planes</button>
+            <button type="button" class="nav-tab" data-section="forum">Foro</button>
+        </nav>
         <button id="darkModeToggle">Modo Oscuro</button>
     </header>
     <main>
-        <section class="hero">
-            <h2>Define tu Camino, Conquista tus Sueños</h2>
-            <p>Organiza tus planes, acciones y progreso de manera efectiva.</p>
-            <button>Empezar Ahora</button>
+        <!-- Sección Planes -->
+        <section id="sectionPlans" class="app-section">
+            <div class="panel panel-plans">
+                <h2>Mis Planes</h2>
+                <button type="button" class="btn-primary" id="btnNewPlan">+ Nuevo plan</button>
+                <div id="planList" class="list"></div>
+            </div>
+            <div class="panel panel-detail" id="panelDetail">
+                <div id="detailPlaceholder" class="detail-placeholder">
+                    <p>Selecciona un plan o crea uno nuevo para ver sus acciones.</p>
+                </div>
+                <div id="detailContent" class="detail-content hidden">
+                    <div class="detail-header">
+                        <h2 id="detailPlanTitle"></h2>
+                        <p id="detailPlanDescription" class="muted"></p>
+                        <button type="button" class="btn-danger btn-sm" id="btnDeletePlan">Eliminar plan</button>
+                    </div>
+                    <div class="actions-block">
+                        <h3>Acciones del plan</h3>
+                        <button type="button" class="btn-primary btn-sm" id="btnNewAction">+ Nueva acción</button>
+                        <ul id="actionList" class="list list-actions"></ul>
+                    </div>
+                </div>
+            </div>
         </section>
 
-        <section class="features">
-            <div class="feature-card">
-                <h3>Crea Planes Detallados</h3>
-                <p>Establece objetivos claros y desglósalos en planes manejables.</p>
+        <!-- Sección Foro -->
+        <section id="sectionForum" class="app-section hidden">
+            <div class="panel panel-posts">
+                <div class="forum-header">
+                    <h2 id="forumTitle">Foro</h2>
+                    <button type="button" class="btn-primary" id="btnNewPost">+ Nuevo post</button>
+                </div>
+                <button type="button" class="btn-secondary btn-sm" id="btnBackToCategories" style="display:none; margin-bottom: 1rem;">← Volver a categorías</button>
+                <div id="categoriesView" class="categories-grid"></div>
+                <div id="postList" class="list" style="display:none;"></div>
             </div>
-            <div class="feature-card">
-                <h3>Registra tus Acciones</h3>
-                <p>Mantén un seguimiento de cada paso que das hacia tu meta.</p>
-            </div>
-            <div class="feature-card">
-                <h3>Monitorea tu Progreso</h3>
-                <p>Visualiza tu avance y mantente motivado en cada etapa.</p>
+            <div class="panel panel-detail">
+                <div id="forumPlaceholder" class="detail-placeholder">
+                    <p>Selecciona un post para leer y comentar.</p>
+                </div>
+                <div id="forumContent" class="detail-content hidden">
+                    <div class="detail-header">
+                        <span class="badge" id="postCategory"></span>
+                        <h2 id="postTitle"></h2>
+                        <p id="postMeta" class="muted"></p>
+                        <div id="postBody" class="post-body"></div>
+                    <div class="post-likes">
+                        <span id="postLikeCount" class="like-count">0</span> likes
+                        <button type="button" class="btn-like btn-sm" id="btnLike" title="Like">👍</button>
+                        <button type="button" class="btn-dislike btn-sm" id="btnDislike" title="Dislike">👎</button>
+                    </div>
+                    </div>
+                    <div class="comments-block">
+                        <h3>Comentarios</h3>
+                        <form id="formComment" class="comment-form">
+                            <textarea id="commentText" rows="2" placeholder="Escribe un comentario..." required></textarea>
+                            <button type="submit" class="btn-primary btn-sm">Comentar</button>
+                        </form>
+                        <ul id="commentList" class="list list-comments"></ul>
+                    </div>
+                </div>
             </div>
         </section>
 
-        <section class="cta">
-            <h2>¿Listo para transformar tus ideas en realidad?</h2>
-            <button>Únete a Mi Plan</button>
-        </section>
+        <!-- Modal: Crear plan -->
+        <dialog id="modalPlan" class="modal">
+            <form id="formPlan" class="modal-form">
+                <h3 id="modalPlanTitle">Nuevo plan</h3>
+                <label>Título <input type="text" id="planTitle" name="title" required placeholder="Ej: Aprender inglés"></label>
+                <label>Descripción <textarea id="planDescription" name="description" rows="3" placeholder="Describe tu objetivo..."></textarea></label>
+                <label>Estado <select id="planStatus" name="status">
+                    <option value="ACTIVE">Activo</option>
+                    <option value="PAUSED">Pausado</option>
+                    <option value="COMPLETED">Completado</option>
+                    <option value="CANCELED">Cancelado</option>
+                </select></label>
+                <div class="modal-actions">
+                    <button type="submit" class="btn-primary">Guardar</button>
+                    <button type="button" class="btn-secondary" id="btnCancelPlan">Cancelar</button>
+                </div>
+            </form>
+        </dialog>
+
+        <!-- Modal: Crear acción -->
+        <dialog id="modalAction" class="modal">
+            <form id="formAction" class="modal-form">
+                <h3>Nueva acción</h3>
+                <p class="muted" id="actionPlanContext"></p>
+                <label>Título <input type="text" id="actionTitle" name="title" required placeholder="Ej: Estudiar 30 min"></label>
+                <label>Descripción <textarea id="actionDescription" name="description" rows="3" placeholder="Detalles..."></textarea></label>
+                <div class="modal-actions">
+                    <button type="submit" class="btn-primary">Guardar</button>
+                    <button type="button" class="btn-secondary" id="btnCancelAction">Cancelar</button>
+                </div>
+            </form>
+        </dialog>
+
+        <!-- Modal: Crear post -->
+        <dialog id="modalPost" class="modal">
+            <form id="formPost" class="modal-form">
+                <h3>Nuevo post</h3>
+                <label>Título <input type="text" id="postTitleInput" required placeholder="Título del post"></label>
+                <label>Contenido <textarea id="postContentInput" rows="5" required placeholder="Escribe tu mensaje..."></textarea></label>
+                <label>Categoría <select id="postCategorySelect">
+                    <option value="GENERAL">General</option>
+                    <option value="PLANIFICATION">Planificación</option>
+                    <option value="PROGRESS">Progreso</option>
+                    <option value="REFLECTION">Reflexión</option>
+                    <option value="OTHER">Otro</option>
+                </select></label>
+                <div class="modal-actions">
+                    <button type="submit" class="btn-primary">Publicar</button>
+                    <button type="button" class="btn-secondary" id="btnCancelPost">Cancelar</button>
+                </div>
+            </form>
+        </dialog>
     </main>
     <footer>
         <p>&copy; 2026 Mi Plan. Todos los derechos reservados.</p>

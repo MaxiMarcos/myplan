@@ -12,13 +12,20 @@ import java.util.stream.Collectors;
 public class CommentMapper {
 
     public CommentResponseDto toResponse(Comment comment) {
-        return new CommentResponseDto(comment.getText(), comment.getUser().getId(), comment.getCreatedAt());
+        Long userId = comment.getUser() != null ? comment.getUser().getId() : null;
+        Long postId = comment.getPost() != null ? comment.getPost().getId() : null;
+        return new CommentResponseDto(
+                comment.getId(),
+                comment.getText(),
+                comment.getCreatedAt(),
+                userId,
+                postId
+        );
     }
 
-    public Comment toEntity(CommentRequestDto commentRequestDto) {
+    public Comment toEntity(CommentRequestDto request) {
         return Comment.builder()
-                .text(commentRequestDto.text())
-                .createdAt(commentRequestDto.createdAt())
+                .text(request.text())
                 .build();
     }
 

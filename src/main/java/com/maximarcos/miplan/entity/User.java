@@ -27,4 +27,6 @@ public class User {
     private List<Comment> comment;
     @OneToMany(mappedBy = "user")
     private List<Action> action;
+    @OneToMany(mappedBy = "author")
+    private List<Post> posts;
 }
